@@ -1,13 +1,7 @@
 import zoneinfo
 from datetime import datetime
 from fastapi import FastAPI
-from pydantic import BaseModel
-
-class Customer(BaseModel):
-    name: str
-    description: str | None
-    email: str
-    age: int
+from models import Customer, Transaction, Invoice
 
 app = FastAPI()
 
@@ -34,17 +28,10 @@ async def time(iso_code: str):
 async def create_customer(customer_data: Customer):
     return customer_data
 
-'''
-@app.put('/customers')
-async def create_customer(customer_data: Customer):
-    return customer_data
+@app.post('/transactions')
+async def create_transaction(transaction_data: Transaction):
+    return transaction_data
 
-@app.delete('/customers')
-async def create_customer(customer_data: Customer):
-    return customer_data
-
-@app.delete('/inventory')
-async def create_customer(customer_data: Customer):
-    return customer_data
-
-'''
+@app.post('/invoices')
+async def create_invoice(invoice_data: Invoice):
+    return invoice_data
