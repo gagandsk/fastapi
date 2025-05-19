@@ -1,7 +1,9 @@
 import time
+from typing import Annotated
 import zoneinfo
 from datetime import datetime
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from db import create_all_tables
 from .routers import customers, transactions, invoices, plans
 
@@ -28,9 +30,15 @@ async def get_headers(request: Request, call_next):
     return response
 '''
 
+security = HTTPBasic()
+
 @app.get('/')
-async def root():
-    return {"name": "Hello World from Python"}
+async def root(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
+    print(credentials)
+    if credentials.username == 'gdass' and credentials.password == "qwerty":
+        return {"message": f"Hello, {credentials.username}"}
+    else:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 country_timezones = {
     "CO": "America/Bogota",
